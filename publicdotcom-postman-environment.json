@@ -1,0 +1,33 @@
+{
+	"id": "1b559dce-54d8-4fd2-b8da-92a7e93048f0",
+	"name": "Public.com",
+	"values": [
+		{
+			"key": "secret_key",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "expirationTime",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "orderId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-10-31T19:54:07.042Z",
+	"_postman_exported_using": "Postman/11.69.7"
+}

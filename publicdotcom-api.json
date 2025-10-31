@@ -1,0 +1,840 @@
+{
+	"info": {
+		"_postman_id": "d6545731-995b-4639-86d2-0fff9a33d709",
+		"name": "Public API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10055952"
+	},
+	"item": [
+		{
+			"name": "Authorization",
+			"item": [
+				{
+					"name": "Create personal access token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json;",
+									"",
+									"json = pm.response.json();",
+									"",
+									"if (json.accessToken) {",
+									"  pm.environment.set(\"accessToken\", json.accessToken);",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"validityInMinutes\": 123,\n    \"secret\": \"{{secret_key}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapiauthservice/personal/access-tokens",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapiauthservice",
+								"personal",
+								"access-tokens"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "List Accounts",
+			"item": [
+				{
+					"name": "Get accounts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/account",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"account"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account Details",
+			"item": [
+				{
+					"name": "Get account portfolio v2",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/portfolio/v2",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"portfolio",
+								"v2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get history",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/history",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"history"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "{{start}}",
+									"disabled": true
+								},
+								{
+									"key": "end",
+									"value": "{{end}}",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "{{pageSize}}",
+									"disabled": true
+								},
+								{
+									"key": "nextToken",
+									"value": "{{nextToken}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Instrument Details",
+			"item": [
+				{
+					"name": "Get all instuments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/instruments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"instruments"
+							],
+							"query": [
+								{
+									"key": "typeFilter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "tradingFilter",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "fractionalTradingFilter",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "optionTradingFilter",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "optionSpreadTradingFilter",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get instrument",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/instruments/{{symbol}}/{{type}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"instruments",
+								"{{symbol}}",
+								"{{type}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Market Data",
+			"item": [
+				{
+					"name": "Get quotes",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"instruments\": [\n        {\n            \"symbol\": \"{{symbol}}\",\n            \"type\": \"{{type}}\"\n        }\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/marketdata/{{accountId}}/quotes",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"marketdata",
+								"{{accountId}}",
+								"quotes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get option expirations",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"instrument\": {\n    \"symbol\": \"AAPL\",\n    \"type\": \"EQUITY\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/marketdata/{{accountId}}/option-expirations",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"marketdata",
+								"{{accountId}}",
+								"option-expirations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get option chain",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"instrument\": {\n    \"symbol\": \"AAPL\",\n    \"type\": \"EQUITY\"\n  },\n  \"expirationDate\": \"2026-02-20\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/marketdata/{{accountId}}/option-chain",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"marketdata",
+								"{{accountId}}",
+								"option-chain"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order Placement",
+			"item": [
+				{
+					"name": "Preflight single leg",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Get the current date and time",
+									"let now = new Date();",
+									"",
+									"// Add 24 hours (in milliseconds)",
+									"let expirationDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);",
+									"",
+									"// Convert to ISO string (UTC)",
+									"let expirationISO = expirationDate.toISOString();",
+									"",
+									"// Set it as an environment or local variable",
+									"pm.environment.set(\"expirationTime\", expirationISO);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"instrument\": {\n    \"symbol\": \"AAPL\",\n    \"type\": \"EQUITY\"\n  },\n  \"orderSide\": \"BUY\",\n  \"orderType\": \"MARKET\",\n  \"expiration\": {\n    \"timeInForce\": \"DAY\"\n  },\n  \"quantity\": \"1\",\n  \"equityMarketSession\": \"CORE\",\n  \"openCloseIndicator\": \"OPEN\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/preflight/single-leg",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"preflight",
+								"single-leg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Preflight multi leg",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderType\": \"LIMIT\",\n  \"type\": \"LIMIT\",\n  \"limitPrice\": \"0.26\",\n  \"expiration\": {\n    \"timeInForce\": \"DAY\"\n  },\n  \"quantity\": 1,\n  \"legs\": [\n    {\n      \"instrument\": {\n        \"symbol\": \"AAPL260220P00350000\",\n        \"type\": \"OPTION\"\n      },\n      \"side\": \"BUY\",\n      \"openCloseIndicator\": \"OPEN\",\n      \"ratioQuantity\": 1\n    },\n    {\n      \"instrument\": {\n        \"symbol\": \"AAPL260220P00360000\",\n        \"type\": \"OPTION\"\n      },\n      \"side\": \"SELL\",\n      \"openCloseIndicator\": \"OPEN\",\n      \"ratioQuantity\": 1\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/preflight/multi-leg",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"preflight",
+								"multi-leg"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Place order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"orderId\", crypto.randomUUID());"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"instrument\": {\n    \"symbol\": \"AAPL\",\n    \"type\": \"EQUITY\"\n  },\n  \"orderSide\": \"BUY\",\n  \"orderType\": \"LIMIT\",\n  \"expiration\": {\n    \"timeInForce\": \"DAY\"\n  },\n  \"quantity\": \"1\",\n  \"limitPrice\": \"100.00\",\n  \"equityMarketSession\": \"CORE\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Place multileg order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"orderId\", crypto.randomUUID());"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"quantity\": 1,\n  \"type\": \"LIMIT\",\n  \"limitPrice\": \"0.26\",\n  \"expiration\": {\n    \"timeInForce\": \"DAY\"\n  },\n  \"legs\": [\n    {\n      \"instrument\": {\n        \"symbol\": \"AAPL260220P00350000\",\n        \"type\": \"OPTION\"\n      },\n      \"side\": \"BUY\",\n      \"openCloseIndicator\": \"OPEN\",\n      \"ratioQuantity\": 1\n    },\n    {\n      \"instrument\": {\n        \"symbol\": \"AAPL260220P00360000\",\n        \"type\": \"OPTION\"\n      },\n      \"side\": \"SELL\",\n      \"openCloseIndicator\": \"OPEN\",\n      \"ratioQuantity\": 1\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order/multileg",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"order",
+								"multileg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get order",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order/{{orderId}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"order",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel order",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order/{{orderId}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"order",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Option details",
+			"item": [
+				{
+					"name": "Get option greeks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/option-details/{{accountId}}/{{osiOptionSymbol}}/greeks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"option-details",
+								"{{accountId}}",
+								"{{osiOptionSymbol}}",
+								"greeks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "accountId",
+			"value": ""
+		},
+		{
+			"key": "symbol",
+			"value": ""
+		},
+		{
+			"key": "type",
+			"value": ""
+		},
+		{
+			"key": "osiOptionSymbol",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
