@@ -750,6 +750,148 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Modify order",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "public-dev-docs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"requestId\": \"{{$randomUUID}}\",\n  \"orderType\": \"LIMIT\",\n  \"expiration\": {\n    \"timeInForce\": \"GTD\",\n    \"expirationTime\": \"2026-07-08T17:10:58.009Z\"\n  },\n  \"quantity\": \"1\",\n  \"limitPrice\": \"100.00\",\n  \"stopPrice\": \"95.00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"order"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Historic Data",
+			"item": [
+				{
+					"name": "Get bars",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/historicdata/{{type}}/{{symbol}}/{{period}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"historicdata",
+								"{{type}}",
+								"{{symbol}}",
+								"{{period}}"
+							],
+							"query": [
+								{
+									"key": "purchaseDate",
+									"value": "{{purchaseDate}}",
+									"description": "Required for SINCE_PURCHASE. YYYY-MM-DD",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Fetch bar data for a given symbol and period. type: EQUITY | CRYPTO | OPTION | INDEX. period: DAY | WEEK | MONTH | QUARTER | HALF_YEAR | YEAR | FIVE_YEARS | YTD | SINCE_PURCHASE."
+					},
+					"response": []
+				},
+				{
+					"name": "Get bars with aggregation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/historicdata/{{type}}/{{symbol}}/{{period}}/{{aggregation}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"historicdata",
+								"{{type}}",
+								"{{symbol}}",
+								"{{period}}",
+								"{{aggregation}}"
+							],
+							"query": [
+								{
+									"key": "purchaseDate",
+									"value": "{{purchaseDate}}",
+									"description": "Required for SINCE_PURCHASE. YYYY-MM-DD",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Fetch bar data for a given symbol and period with aggregation override. aggregation: ONE_MINUTE | FIVE_MINUTES | TEN_MINUTES | FIFTEEN_MINUTES | THIRTY_MINUTES | ONE_HOUR | ONE_DAY | ONE_WEEK | ONE_MONTH | THREE_MONTHS | SIX_MONTHS | ONE_YEAR."
+					},
+					"response": []
 				}
 			]
 		},
@@ -773,7 +915,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://api.public.com/userapigateway/option-details/{{accountId}}/{{osiOptionSymbol}}/greeks",
+							"raw": "https://api.public.com/userapigateway/option-details/{{accountId}}/greeks?osiSymbols={{osiOptionSymbol}}",
 							"protocol": "https",
 							"host": [
 								"api",
@@ -784,8 +926,13 @@
 								"userapigateway",
 								"option-details",
 								"{{accountId}}",
-								"{{osiOptionSymbol}}",
 								"greeks"
+							],
+							"query": [
+								{
+									"key": "osiSymbols",
+									"value": "{{osiOptionSymbol}}"
+								}
 							]
 						}
 					},
@@ -833,6 +980,21 @@
 		},
 		{
 			"key": "osiOptionSymbol",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "period",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "aggregation",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "purchaseDate",
 			"value": "",
 			"type": "default"
 		}
