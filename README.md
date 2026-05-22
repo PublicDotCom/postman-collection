@@ -78,8 +78,13 @@ The collection is organized into the following folders:
 - `Place multileg order` - Submit a multi-leg option order (spreads, etc.)
 - `Get order` - Check the status of an order
 - `Cancel order` - Cancel a pending order
+- `Modify order` - Cancel-replace an existing order
 
-#### 7. **Option Details**
+#### 7. **Historic Data**
+- `Get bars` - Fetch bar data for a given symbol and period
+- `Get bars with aggregation` - Fetch bar data with a specific aggregation interval
+
+#### 8. **Option Details**
 - `Get option greeks` - Retrieve Greeks (delta, gamma, theta, vega, rho) for an option
 
 ## Collection Variables
@@ -90,6 +95,9 @@ The collection includes variables that can be set at the collection level:
 - `symbol` - Stock/instrument symbol (e.g., "AAPL")
 - `type` - Instrument type (e.g., "EQUITY", "OPTION")
 - `osiOptionSymbol` - OSI-formatted option symbol (e.g., "AAPL260220P00350000")
+- `period` - Time period for historic bar data (e.g., "DAY", "WEEK", "MONTH", "YEAR", "YTD", "SINCE_PURCHASE")
+- `aggregation` - Bar aggregation interval (e.g., "ONE_MINUTE", "FIVE_MINUTES", "ONE_HOUR", "ONE_DAY")
+- `purchaseDate` - Date in `YYYY-MM-DD` format, required when `period` is `SINCE_PURCHASE`
 
 ### Setting Collection Variables
 
