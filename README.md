@@ -62,16 +62,21 @@ The collection is organized into the following folders:
 - `Get account portfolio v2` - View portfolio holdings and positions
 - `Get history` - Retrieve account transaction history with optional pagination
 
-#### 4. **Instrument Details**
+#### 4. **Tax Lot Selling**
+- `Get unrealized tax lots` - Retrieve the account's unrealized tax lot summary
+- `Get unrealized tax lots for symbol` - Retrieve unrealized tax lot detail for a specific symbol (optional `price` query param to compute unrealized values)
+- `Get unrealized tax lots CSV` - Export unrealized tax lots as a base64-encoded CSV
+
+#### 5. **Instrument Details**
 - `Get all instruments` - List all available trading instruments
 - `Get instrument` - Get details for a specific instrument by symbol and type
 
-#### 5. **Market Data**
+#### 6. **Market Data**
 - `Get quotes` - Fetch real-time quotes for specified instruments
 - `Get option expirations` - Retrieve available expiration dates for options on an underlying
 - `Get option chain` - Get option chain data for a specific expiration date
 
-#### 6. **Order Placement**
+#### 7. **Order Placement**
 - `Preflight single leg` - Validate a single-leg order before placement
 - `Preflight multi leg` - Validate a multi-leg option order before placement
 - `Place order` - Submit a single-leg equity or option order
@@ -80,12 +85,15 @@ The collection is organized into the following folders:
 - `Cancel order` - Cancel a pending order
 - `Modify order` - Cancel-replace an existing order
 
-#### 7. **Historic Data**
+> **Note**: Equity `Place order` and `Preflight single leg` requests optionally accept a `taxLotMatchingInstructions` array (each entry: `taxLotId`, `quantity`) to specify which tax lots to sell when closing a position. It is omitted from the sample bodies because it requires real tax-lot IDs — obtain them from the **Tax Lot Selling** endpoints and add the array yourself when needed.
+
+#### 8. **Historic Data**
 - `Get bars` - Fetch bar data for a given symbol and period
 - `Get bars with aggregation` - Fetch bar data with a specific aggregation interval
 
-#### 8. **Option Details**
+#### 9. **Option Details**
 - `Get option greeks` - Retrieve Greeks (delta, gamma, theta, vega, rho) for an option
+- `Get strategy quote` - Get a quote for an option strategy (multi-leg) from a base symbol and option legs
 
 ## Collection Variables
 
@@ -98,6 +106,7 @@ The collection includes variables that can be set at the collection level:
 - `period` - Time period for historic bar data (e.g., "DAY", "WEEK", "MONTH", "YEAR", "YTD", "SINCE_PURCHASE")
 - `aggregation` - Bar aggregation interval (e.g., "ONE_MINUTE", "FIVE_MINUTES", "ONE_HOUR", "ONE_DAY")
 - `purchaseDate` - Date in `YYYY-MM-DD` format, required when `period` is `SINCE_PURCHASE`
+- `price` - Optional price used by "Get unrealized tax lots for symbol" to compute unrealized values
 
 ### Setting Collection Variables
 
