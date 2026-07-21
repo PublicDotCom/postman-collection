@@ -214,6 +214,127 @@
 			]
 		},
 		{
+			"name": "Tax Lot Selling",
+			"item": [
+				{
+					"name": "Get unrealized tax lots",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/taxlots/unrealized",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"taxlots",
+								"unrealized"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get unrealized tax lots for symbol",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/taxlots/unrealized/{{symbol}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"taxlots",
+								"unrealized",
+								"{{symbol}}"
+							],
+							"query": [
+								{
+									"key": "price",
+									"value": "{{price}}",
+									"description": "Optional. Price used to compute unrealized values.",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get unrealized tax lots CSV",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/taxlots/csv/unrealized",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"taxlots",
+								"csv",
+								"unrealized"
+							]
+						},
+						"description": "Returns a base64-encoded CSV export of the account's unrealized tax lots."
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Instrument Details",
 			"item": [
 				{
@@ -937,6 +1058,50 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get strategy quote",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"baseSymbol\": \"AAPL\",\n  \"optionLegs\": [\n    { \"symbol\": \"AAPL260220P00350000\", \"side\": \"BUY\",  \"openCloseIndicator\": \"OPEN\", \"ratioQuantity\": 1 },\n    { \"symbol\": \"AAPL260220P00360000\", \"side\": \"SELL\", \"openCloseIndicator\": \"OPEN\", \"ratioQuantity\": 1 }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/option-details/{{accountId}}/strategy-details/quote",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"option-details",
+								"{{accountId}}",
+								"strategy-details",
+								"quote"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
@@ -995,6 +1160,11 @@
 		},
 		{
 			"key": "purchaseDate",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "price",
 			"value": "",
 			"type": "default"
 		}
