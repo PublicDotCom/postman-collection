@@ -70,9 +70,11 @@ The collection is organized into the following folders:
 #### 5. **Instrument Details**
 - `Get all instruments` - List all available trading instruments
 - `Get instrument` - Get details for a specific instrument by symbol and type
+- `Search bonds` - Filtered search for fixed income instruments with paging, sorting, and optional filters (issuer, bond type, rating, coupon, maturity, yield, and more)
 
 #### 6. **Market Data**
 - `Get quotes` - Fetch real-time quotes for specified instruments
+- `Get bond details` - Retrieve comprehensive bond details (pricing, ratings, maturity) for a single bond symbol
 - `Get option expirations` - Retrieve available expiration dates for options on an underlying
 - `Get option chain` - Get option chain data for a specific expiration date
 
@@ -83,7 +85,7 @@ The collection is organized into the following folders:
 - `Place multileg order` - Submit a multi-leg option order (spreads, etc.)
 - `Get order` - Check the status of an order
 - `Cancel order` - Cancel a pending order
-- `Modify order` - Cancel-replace an existing order
+- `Modify order` - Cancel-replace an existing order with either `quantity` or a notional `amount` (mutually exclusive); supported for equity, option, and crypto quantity orders
 
 > **Note**: Equity `Place order` and `Preflight single leg` requests optionally accept a `taxLotMatchingInstructions` array (each entry: `taxLotId`, `quantity`) to specify which tax lots to sell when closing a position. It is omitted from the sample bodies because it requires real tax-lot IDs — obtain them from the **Tax Lot Selling** endpoints and add the array yourself when needed.
 

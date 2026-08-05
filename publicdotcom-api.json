@@ -431,6 +431,211 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Search bonds",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/instruments/bonds",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"instruments",
+								"bonds"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "",
+									"description": "Page number (zero-based). Default 0.",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "",
+									"description": "Number of items per page. Default 20.",
+									"disabled": true
+								},
+								{
+									"key": "sortProperty",
+									"value": "",
+									"description": "Property to sort by",
+									"disabled": true
+								},
+								{
+									"key": "sortDirection",
+									"value": "",
+									"description": "Sort direction: ASC | DESC. Default DESC.",
+									"disabled": true
+								},
+								{
+									"key": "issuer",
+									"value": "",
+									"description": "Filter by issuer name",
+									"disabled": true
+								},
+								{
+									"key": "issuerSymbol",
+									"value": "",
+									"description": "Filter by issuer symbol(s)",
+									"disabled": true
+								},
+								{
+									"key": "bondStatus",
+									"value": "",
+									"description": "Filter by bond status: LIQUIDATED | CONVERTED | FUNGED | REPAID | RESTRUCTURED | CALLED | DEFAULTED | MATURED | OUTSTANDING | PUT | TENDERED | REPURCHASED | PRE_ISSUANCE | UNKNOWN",
+									"disabled": true
+								},
+								{
+									"key": "bondType",
+									"value": "",
+									"description": "Filter by bond type(s): AGENCY | CD | CORPORATE | GOVERNMENT | MUNICIPAL | TREASURY",
+									"disabled": true
+								},
+								{
+									"key": "treasurySubtype",
+									"value": "",
+									"description": "Filter by treasury subtype(s): BOND | BILL | NOTE | STRIPS | TIPS | FLOATING",
+									"disabled": true
+								},
+								{
+									"key": "rating",
+									"value": "",
+									"description": "Filter by S&P credit rating(s), from AAA through D, or NR",
+									"disabled": true
+								},
+								{
+									"key": "ratingCategory",
+									"value": "",
+									"description": "Filter by rating category: INVESTMENT_GRADE | SPECULATIVE_GRADE",
+									"disabled": true
+								},
+								{
+									"key": "spOutlook",
+									"value": "",
+									"description": "Filter by S&P outlook: POSITIVE | NEGATIVE | DEVELOPING | STABLE | NOT_RATED | NOT_MEANINGFUL",
+									"disabled": true
+								},
+								{
+									"key": "spCreditwatch",
+									"value": "",
+									"description": "Filter by S&P creditwatch status: POSITIVE | NEGATIVE | DEVELOPING | NOT_MEANINGFUL",
+									"disabled": true
+								},
+								{
+									"key": "couponFrequency",
+									"value": "",
+									"description": "Filter by coupon payment frequency: AT_MATURITY | ZERO | MONTHLY | QUARTERLY | SEMI_ANNUAL | ANNUAL",
+									"disabled": true
+								},
+								{
+									"key": "minCoupon",
+									"value": "",
+									"description": "Minimum coupon rate",
+									"disabled": true
+								},
+								{
+									"key": "maxCoupon",
+									"value": "",
+									"description": "Maximum coupon rate",
+									"disabled": true
+								},
+								{
+									"key": "minMaturityDate",
+									"value": "",
+									"description": "Minimum maturity date (yyyy-MM-dd). Defaults to today + 14 days to exclude bonds nearing maturity with volatile yields.",
+									"disabled": true
+								},
+								{
+									"key": "maxMaturityDate",
+									"value": "",
+									"description": "Maximum maturity date (yyyy-MM-dd)",
+									"disabled": true
+								},
+								{
+									"key": "minCurrentYield",
+									"value": "",
+									"description": "Minimum current yield",
+									"disabled": true
+								},
+								{
+									"key": "maxCurrentYield",
+									"value": "",
+									"description": "Maximum current yield",
+									"disabled": true
+								},
+								{
+									"key": "minParValue",
+									"value": "",
+									"description": "Minimum par value",
+									"disabled": true
+								},
+								{
+									"key": "maxParValue",
+									"value": "",
+									"description": "Maximum par value",
+									"disabled": true
+								},
+								{
+									"key": "minLiquidityRating",
+									"value": "",
+									"description": "Minimum liquidity rating",
+									"disabled": true
+								},
+								{
+									"key": "maxLiquidityRating",
+									"value": "",
+									"description": "Maximum liquidity rating",
+									"disabled": true
+								},
+								{
+									"key": "liquidityRating",
+									"value": "",
+									"description": "Filter by specific liquidity rating(s) - scores from 1 (low) to 5 (high)",
+									"disabled": true
+								},
+								{
+									"key": "callable",
+									"value": "",
+									"description": "Filter by callable status (true/false)",
+									"disabled": true
+								},
+								{
+									"key": "perpetual",
+									"value": "",
+									"description": "Filter by perpetual bond status (true/false)",
+									"disabled": true
+								},
+								{
+									"key": "partialPar",
+									"value": "",
+									"description": "Filter by partial par status (true/false)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Filtered search for fixed income instruments. Returns a paged list of bonds from the bonds hub with support for filtering, sorting, and pagination. All query parameters are optional."
+					},
+					"response": []
 				}
 			]
 		},
@@ -477,6 +682,42 @@
 								"quotes"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get bond details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/marketdata/{{accountId}}/bond-details/{{symbol}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"marketdata",
+								"{{accountId}}",
+								"bond-details",
+								"{{symbol}}"
+							]
+						},
+						"description": "Returns comprehensive bond instrument details including pricing, ratings, and maturity information for a single bond symbol."
 					},
 					"response": []
 				},
@@ -916,7 +1157,8 @@
 								"{{accountId}}",
 								"order"
 							]
-						}
+						},
+						"description": "Submits an asynchronous cancel-and-replace of an existing order. Provide either quantity or amount (notional value) in the body - the two are mutually exclusive. Supported for equity, option, and crypto quantity orders. The response confirms submission only; use Get order to verify the replacement's status."
 					},
 					"response": []
 				}
