@@ -93,6 +93,8 @@ The collection is organized into the following folders:
 - `Get bars` - Fetch bar data for a given symbol and period
 - `Get bars with aggregation` - Fetch bar data with a specific aggregation interval
 
+> **Note**: Both requests optionally accept an `ipoDate` query parameter (the asset's IPO / first-trade date, `YYYY-MM-DD`). When the asset is younger than the requested period, the backend fetches a finer aggregation over the available post-IPO history and the response includes a `leadingFill` object describing the flat pre-IPO lead-in (not emitted for the DAY chart or the ALL / SINCE_PURCHASE periods).
+
 #### 9. **Option Details**
 - `Get option greeks` - Retrieve Greeks (delta, gamma, theta, vega, rho) for an option
 - `Get strategy quote` - Get a quote for an option strategy (multi-leg) from a base symbol and option legs
@@ -108,6 +110,7 @@ The collection includes variables that can be set at the collection level:
 - `period` - Time period for historic bar data (e.g., "DAY", "WEEK", "MONTH", "YEAR", "YTD", "SINCE_PURCHASE")
 - `aggregation` - Bar aggregation interval (e.g., "ONE_MINUTE", "FIVE_MINUTES", "ONE_HOUR", "ONE_DAY")
 - `purchaseDate` - Date in `YYYY-MM-DD` format, required when `period` is `SINCE_PURCHASE`
+- `ipoDate` - Optional IPO / first-trade date in `YYYY-MM-DD` format for the Historic Data requests; enables the `leadingFill` response object for assets younger than the requested period
 - `price` - Optional price used by "Get unrealized tax lots for symbol" to compute unrealized values
 
 ### Setting Collection Variables

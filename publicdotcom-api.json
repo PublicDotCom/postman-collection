@@ -1204,10 +1204,16 @@
 									"value": "{{purchaseDate}}",
 									"description": "Required for SINCE_PURCHASE. YYYY-MM-DD",
 									"disabled": true
+								},
+								{
+									"key": "ipoDate",
+									"value": "{{ipoDate}}",
+									"description": "Optional. The asset's IPO / first-trade date (YYYY-MM-DD). When the asset is younger than the requested period, the backend fetches a finer aggregation over the available post-IPO history (so the chart isn't a straight diagonal) and returns a `leadingFill` object describing the flat lead-in for the pre-IPO portion. When omitted, behavior is unchanged. A future or unparseable value is ignored. Not applied to the DAY chart.",
+									"disabled": true
 								}
 							]
 						},
-						"description": "Fetch bar data for a given symbol and period. type: EQUITY | CRYPTO | OPTION | INDEX. period: DAY | WEEK | MONTH | QUARTER | HALF_YEAR | YEAR | FIVE_YEARS | YTD | SINCE_PURCHASE."
+						"description": "Fetch bar data for a given symbol and period. type: EQUITY | CRYPTO | OPTION | INDEX. period: DAY | WEEK | MONTH | QUARTER | HALF_YEAR | YEAR | FIVE_YEARS | YTD | SINCE_PURCHASE. The response may include a `leadingFill` object describing a flat lead-in from the period start to the first real bar; present only when the first available data point starts after the requested period, and not emitted for the DAY chart or the ALL / SINCE_PURCHASE periods."
 					},
 					"response": []
 				},
@@ -1249,10 +1255,16 @@
 									"value": "{{purchaseDate}}",
 									"description": "Required for SINCE_PURCHASE. YYYY-MM-DD",
 									"disabled": true
+								},
+								{
+									"key": "ipoDate",
+									"value": "{{ipoDate}}",
+									"description": "Optional. The asset's IPO / first-trade date (YYYY-MM-DD). When the asset is younger than the requested period, the backend fetches a finer aggregation over the available post-IPO history (so the chart isn't a straight diagonal) and returns a `leadingFill` object describing the flat lead-in for the pre-IPO portion. When omitted, behavior is unchanged. A future or unparseable value is ignored. Not applied to the DAY chart.",
+									"disabled": true
 								}
 							]
 						},
-						"description": "Fetch bar data for a given symbol and period with aggregation override. aggregation: ONE_MINUTE | FIVE_MINUTES | TEN_MINUTES | FIFTEEN_MINUTES | THIRTY_MINUTES | ONE_HOUR | ONE_DAY | ONE_WEEK | ONE_MONTH | THREE_MONTHS | SIX_MONTHS | ONE_YEAR."
+						"description": "Fetch bar data for a given symbol and period with aggregation override. aggregation: ONE_MINUTE | FIVE_MINUTES | TEN_MINUTES | FIFTEEN_MINUTES | THIRTY_MINUTES | ONE_HOUR | ONE_DAY | ONE_WEEK | ONE_MONTH | THREE_MONTHS | SIX_MONTHS | ONE_YEAR. The response may include a `leadingFill` object describing a flat lead-in from the period start to the first real bar; present only when the first available data point starts after the requested period, and not emitted for the DAY chart or the ALL / SINCE_PURCHASE periods."
 					},
 					"response": []
 				}
@@ -1402,6 +1414,11 @@
 		},
 		{
 			"key": "purchaseDate",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "ipoDate",
 			"value": "",
 			"type": "default"
 		},
