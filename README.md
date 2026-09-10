@@ -82,10 +82,15 @@ The collection is organized into the following folders:
 - `Preflight single leg` - Validate a single-leg order before placement
 - `Preflight multi leg` - Validate a multi-leg option order before placement
 - `Place order` - Submit a single-leg equity or option order
+- `Place bracket order` - Submit an entry order with attached take-profit and/or stop-loss exit legs
 - `Place multileg order` - Submit a multi-leg option order (spreads, etc.)
 - `Get order` - Check the status of an order
 - `Cancel order` - Cancel a pending order
 - `Modify order` - Cancel-replace an existing order with either `quantity` or a notional `amount` (mutually exclusive); supported for equity, option, and crypto quantity orders
+
+> **Note**: `Place order` optionally accepts an `orderClass` of `SIMPLE` (the default), `BRACKET`, `OCO` or `OTO`. The three bracket classes attach exit legs via `takeProfit` (a `limitPrice`, placed as a LIMIT order on the opposite side of the entry) and/or `stopLoss` (a `stopPrice`, plus an optional `limitPrice` to make it a STOP_LIMIT). Bracket orders are supported for equities and options only, require a whole-share `quantity` (no `amount`), must use the `CORE` market session, and need a `LIMIT` or `MARKET` entry order type — `LIMIT` only for `OCO`. See the `Place bracket order` request for a ready-to-send sample.
+>
+> `Get order` responses for orders in a bracket carry a `bracketId` — the orderId of the bracket's entry (parent) order, shared by every leg. Standalone orders have no `bracketId`. The entry order of a bracket cannot be modified; its closing legs accept `limitPrice` / `stopPrice` replacements only.
 
 > **Note**: Equity `Place order` and `Preflight single leg` requests optionally accept a `taxLotMatchingInstructions` array (each entry: `taxLotId`, `quantity`) to specify which tax lots to sell when closing a position. It is omitted from the sample bodies because it requires real tax-lot IDs — obtain them from the **Tax Lot Selling** endpoints and add the array yourself when needed.
 
