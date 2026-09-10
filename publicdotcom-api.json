@@ -982,7 +982,65 @@
 								"{{accountId}}",
 								"order"
 							]
+						},
+						"description": "Submits a new order asynchronously for the specified account.\n\nBracket orders: set `orderClass` to BRACKET, OCO or OTO and supply `takeProfit` and/or `stopLoss` — see the \"Place bracket order\" request. The returned orderId identifies the entry order; the exit legs are placed automatically when the entry fills.\n\nOrder placement is asynchronous. The response confirms submission, not execution or visibility. Use Get order to retrieve status or execution details."
+					},
+					"response": []
+				},
+				{
+					"name": "Place bracket order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"orderId\", crypto.randomUUID());"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
 						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"instrument\": {\n    \"symbol\": \"AAPL\",\n    \"type\": \"EQUITY\"\n  },\n  \"orderSide\": \"BUY\",\n  \"orderType\": \"LIMIT\",\n  \"expiration\": {\n    \"timeInForce\": \"DAY\"\n  },\n  \"quantity\": \"1\",\n  \"limitPrice\": \"100.00\",\n  \"equityMarketSession\": \"CORE\",\n  \"orderClass\": \"BRACKET\",\n  \"takeProfit\": {\n    \"limitPrice\": \"120.00\"\n  },\n  \"stopLoss\": {\n    \"stopPrice\": \"90.00\"\n  }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"order"
+							]
+						},
+						"description": "Submits an order with attached exit legs. `orderClass` is SIMPLE (or omitted) for a standalone order, or BRACKET / OCO / OTO for a bracket order built from `takeProfit` and/or `stopLoss`.\n\n`takeProfit` is always placed as a LIMIT order on the opposite side of the entry. `stopLoss` is placed as a STOP order when only `stopPrice` is present, or as a STOP_LIMIT order when `limitPrice` is also present.\n\nConstraints: equities and options only; a whole-share `quantity` (no `amount`); the CORE market session; and a LIMIT or MARKET entry order type (LIMIT only for OCO).\n\nThe returned orderId identifies the entry order. Every order in the bracket — entry and exits — reports that id as its `bracketId` in Get order responses; standalone orders have no `bracketId`."
 					},
 					"response": []
 				},
@@ -1074,7 +1132,8 @@
 								"order",
 								"{{orderId}}"
 							]
-						}
+						},
+						"description": "Retrieves the status and execution details of an order.\n\nOrders that belong to a bracket carry a `bracketId` — the orderId of the bracket's entry (parent) order, shared by every leg of that bracket. Standalone (non-bracket) orders have no `bracketId`."
 					},
 					"response": []
 				},
@@ -1158,7 +1217,7 @@
 								"order"
 							]
 						},
-						"description": "Submits an asynchronous cancel-and-replace of an existing order. Provide either quantity or amount (notional value) in the body - the two are mutually exclusive. Supported for equity, option, and crypto quantity orders. The response confirms submission only; use Get order to verify the replacement's status."
+						"description": "Submits an asynchronous cancel-and-replace of an existing order. Provide either quantity or amount (notional value) in the body - the two are mutually exclusive. Supported for equity, option, and crypto quantity orders. The response confirms submission only; use Get order to verify the replacement's status.\n\nBracket orders: the opening (entry) order cannot be replaced. The closing legs — take-profit, stop-loss, and both legs of an OCO — accept `limitPrice` and `stopPrice` replacements only; `quantity`, `orderType` and `expiration` must be resubmitted unchanged."
 					},
 					"response": []
 				}
