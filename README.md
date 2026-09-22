@@ -85,12 +85,16 @@ The collection is organized into the following folders:
 - `Place bracket order` - Submit an entry order with attached take-profit and/or stop-loss exit legs
 - `Place multileg order` - Submit a multi-leg option order (spreads, etc.)
 - `Get order` - Check the status of an order
+- `Search orders` - Search up to 500 orders from the last 30 days, filtered by status, side, security type, instruments, open/close indicator and a created-at window; returns the v2 order shape
+- `Get order v2` - Check the status of an order using the v2 response shape; orders from the last 30 days only
 - `Cancel order` - Cancel a pending order
 - `Modify order` - Cancel-replace an existing order with either `quantity` or a notional `amount` (mutually exclusive); supported for equity, option, and crypto quantity orders
 
 > **Note**: `Place order` optionally accepts an `orderClass` of `SIMPLE` (the default), `BRACKET`, `OCO` or `OTO`. The three bracket classes attach exit legs via `takeProfit` (a `limitPrice`, placed as a LIMIT order on the opposite side of the entry) and/or `stopLoss` (a `stopPrice`, plus an optional `limitPrice` to make it a STOP_LIMIT). Bracket orders are supported for equities and options only, require a whole-share `quantity` (no `amount`), must use the `CORE` market session, and need a `LIMIT` or `MARKET` entry order type — `LIMIT` only for `OCO`. See the `Place bracket order` request for a ready-to-send sample.
 >
 > `Get order` responses for orders in a bracket carry a `bracketId` — the orderId of the bracket's entry (parent) order, shared by every leg. Standalone orders have no `bracketId`. The entry order of a bracket cannot be modified; its closing legs accept `limitPrice` / `stopPrice` replacements only.
+
+> **Note**: `Search orders` and `Get order v2` return the v2 order shape — everything `Get order` returns plus `equityMarketSession`, `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`). Both only cover orders created within the last 30 days, and `Search orders` returns at most 500 orders. Every field in the `Search orders` body is an optional filter — send `{}` to list all recent orders; the sample's `createdAfter` / `createdBefore` window is computed by a pre-request script as the trailing 30 days.
 
 > **Note**: Equity `Place order` and `Preflight single leg` requests optionally accept a `taxLotMatchingInstructions` array (each entry: `taxLotId`, `quantity`) to specify which tax lots to sell when closing a position. It is omitted from the sample bodies because it requires real tax-lot IDs — obtain them from the **Tax Lot Selling** endpoints and add the array yourself when needed.
 
@@ -135,7 +139,7 @@ The collection includes variables that can be set at the collection level:
 4. **Check Market Data** - Use "Get quotes" to see current prices
 5. **Preflight Your Order** - Validate your order parameters before placing
 6. **Place Order** - Submit your order (the `orderId` is auto-generated)
-7. **Monitor Order** - Use "Get order" to check status
+7. **Monitor Order** - Use "Get order" (or "Get order v2") to check status, or "Search orders" to list recent orders
 
 ### Working with Options
 
@@ -150,6 +154,7 @@ Several requests include pre-request scripts that automatically:
 - Generate a unique `orderId` using UUID v4
 - Set the `accessToken` after successful authentication
 - Calculate `expirationTime` for orders (24 hours from now)
+- Compute the trailing 30-day `createdAfter` / `createdBefore` window for "Search orders" (request-local variables, not saved to the environment)
 
 ## API Documentation
 
