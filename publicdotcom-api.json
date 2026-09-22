@@ -1138,6 +1138,105 @@
 					"response": []
 				},
 				{
+					"name": "Search orders",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Trailing 30-day window — the search only covers orders created within the last 30 days.",
+									"const now = new Date();",
+									"const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);",
+									"pm.variables.set(\"createdBefore\", now.toISOString().replace(/\\.\\d{3}Z$/, \"Z\"));",
+									"pm.variables.set(\"createdAfter\", thirtyDaysAgo.toISOString().replace(/\\.\\d{3}Z$/, \"Z\"));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"FILLED\",\n  \"side\": \"BUY\",\n  \"securityType\": \"EQUITY\",\n  \"instruments\": [\n    {\n      \"symbol\": \"AAPL\",\n      \"type\": \"EQUITY\"\n    }\n  ],\n  \"createdAfter\": \"{{createdAfter}}\",\n  \"createdBefore\": \"{{createdBefore}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order/v2",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"order",
+								"v2"
+							]
+						},
+						"description": "Search order details and status for orders fulfilling defined criteria. Returns up to 500 orders, and only orders created within the last 30 days.\n\nEvery body field is an optional filter; the filters combine with AND. `status` (NEW, PARTIALLY_FILLED, CANCELLED, QUEUED_CANCELLED, FILLED, REJECTED, PENDING_REPLACE, PENDING_CANCEL, EXPIRED, REPLACED), `side` (BUY / SELL), `securityType` (EQUITY, OPTION, MULTI_LEG_INSTRUMENT, CRYPTO, ALT, TREASURY, BOND, INDEX), `instruments` (array of `{ symbol, type }`), `openCloseIndicator` (OPEN / CLOSE), and a `createdAfter` / `createdBefore` window in ISO 8601 date-time format. Send `{}` to list every order from the last 30 days. The sample's date window is computed by the pre-request script as the trailing 30 days.\n\nEach entry in the returned `orders` array uses the v2 order shape: everything Get order returns (including `bracketId` for bracket legs), plus `equityMarketSession`, `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get order v2",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order/v2/{{orderId}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"trading",
+								"{{accountId}}",
+								"order",
+								"v2",
+								"{{orderId}}"
+							]
+						},
+						"description": "Fetches the status and details of a specific order for the given account. Works only for orders created within the last 30 days.\n\nReturns the v2 order shape: everything Get order returns (including `bracketId` for orders that belong to a bracket), plus `equityMarketSession`, `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`)."
+					},
+					"response": []
+				},
+				{
 					"name": "Cancel order",
 					"request": {
 						"method": "DELETE",
