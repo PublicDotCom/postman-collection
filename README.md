@@ -84,9 +84,8 @@ The collection is organized into the following folders:
 - `Place order` - Submit a single-leg equity or option order
 - `Place bracket order` - Submit an entry order with attached take-profit and/or stop-loss exit legs
 - `Place multileg order` - Submit a multi-leg option order (spreads, etc.)
-- `Get order` - Check the status of an order
-- `Search orders` - Search up to 500 orders from the last 30 days, filtered by status, side, security type, instruments, open/close indicator and a created-at window; returns the v2 order shape
-- `Get order v2` - Check the status of an order using the v2 response shape; orders from the last 30 days only
+- `Get order` - Check the status and execution details of an order; orders from the last 30 days only
+- `Search orders` - Search up to 500 orders from the last 30 days, filtered by status, side, security type, instruments, open/close indicator and a created-at window
 - `Cancel order` - Cancel a pending order
 - `Modify order` - Cancel-replace an existing order with either `quantity` or a notional `amount` (mutually exclusive); supported for equity, option, and crypto quantity orders
 
@@ -94,15 +93,18 @@ The collection is organized into the following folders:
 >
 > `Get order` responses for orders in a bracket carry a `bracketId` — the orderId of the bracket's entry (parent) order, shared by every leg. Standalone orders have no `bracketId`. The entry order of a bracket cannot be modified; its closing legs accept `limitPrice` / `stopPrice` replacements only.
 
-> **Note**: `Search orders` and `Get order v2` return the v2 order shape — everything `Get order` returns plus `equityMarketSession`, `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`). Both only cover orders created within the last 30 days, and `Search orders` returns at most 500 orders. Every field in the `Search orders` body is an optional filter — send `{}` to list all recent orders; the sample's `createdAfter` / `createdBefore` window is computed by a pre-request script as the trailing 30 days.
+> **Note**: `Get order` and each entry returned by `Search orders` share one order shape — order details (including `bracketId`) plus `equityMarketSession`, `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`). Both only cover orders created within the last 30 days, and `Search orders` returns at most 500 orders. Every field in the `Search orders` body is an optional filter — send `{}` to list all recent orders; the sample's `createdAfter` / `createdBefore` window is computed by a pre-request script as the trailing 30 days.
 
 > **Note**: Equity `Place order` and `Preflight single leg` requests optionally accept a `taxLotMatchingInstructions` array (each entry: `taxLotId`, `quantity`) to specify which tax lots to sell when closing a position. It is omitted from the sample bodies because it requires real tax-lot IDs — obtain them from the **Tax Lot Selling** endpoints and add the array yourself when needed.
 
 #### 8. **Historic Data**
 - `Get bars` - Fetch bar data for a given symbol and period
 - `Get bars with aggregation` - Fetch bar data with a specific aggregation interval
+- `Get event contract bars` - Fetch chart bars for up to 8 event contracts (prediction markets) of one event
 
 > **Note**: Both requests optionally accept an `ipoDate` query parameter (the asset's IPO / first-trade date, `YYYY-MM-DD`). When the asset is younger than the requested period, the backend fetches a finer aggregation over the available post-IPO history and the response includes a `leadingFill` object describing the flat pre-IPO lead-in (not emitted for the DAY chart or the ALL / SINCE_PURCHASE periods).
+
+> **Note**: `Get event contract bars` takes an `eventId` (the `-EVENT` grouping id, e.g. `KALSHI.KXBALANCESHEET-EO26-EVENT`), a period of `DAY`, `WEEK`, `MONTH` or `ALL`, and a comma-separated `symbols` list of up to 8 `-EVENTCONTRACT` symbols. Prices are dollars from 0.00 to 1.00 for the side the symbol names (a `.N` symbol carries the NO prices) and read as the implied probability. Charts are aligned by timestamp, not index, and symbols without data are omitted.
 
 #### 9. **Option Details**
 - `Get option greeks` - Retrieve Greeks (delta, gamma, theta, vega, rho) for an option
@@ -114,13 +116,16 @@ The collection includes variables that can be set at the collection level:
 
 - `accountId` - Your trading account ID (obtained from the "Get accounts" endpoint)
 - `symbol` - Stock/instrument symbol (e.g., "AAPL")
-- `type` - Instrument type (e.g., "EQUITY", "OPTION")
+- `type` - Instrument type (e.g., "EQUITY", "OPTION", "EVENTCONTRACT")
 - `osiOptionSymbol` - OSI-formatted option symbol (e.g., "AAPL260220P00350000")
 - `period` - Time period for historic bar data (e.g., "DAY", "WEEK", "MONTH", "YEAR", "YTD", "SINCE_PURCHASE")
 - `aggregation` - Bar aggregation interval (e.g., "ONE_MINUTE", "FIVE_MINUTES", "ONE_HOUR", "ONE_DAY")
 - `purchaseDate` - Date in `YYYY-MM-DD` format, required when `period` is `SINCE_PURCHASE`
 - `ipoDate` - Optional IPO / first-trade date in `YYYY-MM-DD` format for the Historic Data requests; enables the `leadingFill` response object for assets younger than the requested period
 - `price` - Optional price used by "Get unrealized tax lots for symbol" to compute unrealized values
+- `eventId` - Event (`-EVENT`) grouping id for "Get event contract bars" (e.g., "KALSHI.KXBALANCESHEET-EO26-EVENT")
+- `eventContractPeriod` - Period for "Get event contract bars": "DAY", "WEEK", "MONTH" or "ALL"
+- `eventContractSymbols` - Comma-separated list of up to 8 `-EVENTCONTRACT` symbols for "Get event contract bars"
 
 ### Setting Collection Variables
 
@@ -139,7 +144,7 @@ The collection includes variables that can be set at the collection level:
 4. **Check Market Data** - Use "Get quotes" to see current prices
 5. **Preflight Your Order** - Validate your order parameters before placing
 6. **Place Order** - Submit your order (the `orderId` is auto-generated)
-7. **Monitor Order** - Use "Get order" (or "Get order v2") to check status, or "Search orders" to list recent orders
+7. **Monitor Order** - Use "Get order" to check status, or "Search orders" to list recent orders
 
 ### Working with Options
 

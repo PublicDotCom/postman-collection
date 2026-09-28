@@ -370,6 +370,7 @@
 								{
 									"key": "typeFilter",
 									"value": "",
+									"description": "Optional set of security types to filter by: EQUITY | OPTION | MULTI_LEG_INSTRUMENT | CRYPTO | ALT | TREASURY | BOND | INDEX | EVENTCONTRACT",
 									"disabled": true
 								},
 								{
@@ -428,7 +429,8 @@
 								"{{symbol}}",
 								"{{type}}"
 							]
-						}
+						},
+						"description": "Retrieves detailed reference data for a single trading instrument, identified by its symbol and security type. type: EQUITY | OPTION | MULTI_LEG_INSTRUMENT | CRYPTO | ALT | TREASURY | BOND | INDEX | EVENTCONTRACT."
 					},
 					"response": []
 				},
@@ -1133,7 +1135,7 @@
 								"{{orderId}}"
 							]
 						},
-						"description": "Retrieves the status and execution details of an order.\n\nOrders that belong to a bracket carry a `bracketId` — the orderId of the bracket's entry (parent) order, shared by every leg of that bracket. Standalone (non-bracket) orders have no `bracketId`."
+						"description": "Fetches the status and details of a specific order for the given account. Works only for orders created within the last 30 days.\n\nThe response includes `equityMarketSession` (REGULAR / REST_OF_DAY / TWENTY_FOUR_HOURS, for equity orders), `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`).\n\nOrders that belong to a bracket carry a `bracketId` — the orderId of the bracket's entry (parent) order, shared by every leg of that bracket. Standalone (non-bracket) orders have no `bracketId`."
 					},
 					"response": []
 				},
@@ -1180,7 +1182,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order/v2",
+							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order/search",
 							"protocol": "https",
 							"host": [
 								"api",
@@ -1192,47 +1194,10 @@
 								"trading",
 								"{{accountId}}",
 								"order",
-								"v2"
+								"search"
 							]
 						},
-						"description": "Search order details and status for orders fulfilling defined criteria. Returns up to 500 orders, and only orders created within the last 30 days.\n\nEvery body field is an optional filter; the filters combine with AND. `status` (NEW, PARTIALLY_FILLED, CANCELLED, QUEUED_CANCELLED, FILLED, REJECTED, PENDING_REPLACE, PENDING_CANCEL, EXPIRED, REPLACED), `side` (BUY / SELL), `securityType` (EQUITY, OPTION, MULTI_LEG_INSTRUMENT, CRYPTO, ALT, TREASURY, BOND, INDEX), `instruments` (array of `{ symbol, type }`), `openCloseIndicator` (OPEN / CLOSE), and a `createdAfter` / `createdBefore` window in ISO 8601 date-time format. Send `{}` to list every order from the last 30 days. The sample's date window is computed by the pre-request script as the trailing 30 days.\n\nEach entry in the returned `orders` array uses the v2 order shape: everything Get order returns (including `bracketId` for bracket legs), plus `equityMarketSession`, `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`)."
-					},
-					"response": []
-				},
-				{
-					"name": "Get order v2",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{accessToken}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://api.public.com/userapigateway/trading/{{accountId}}/order/v2/{{orderId}}",
-							"protocol": "https",
-							"host": [
-								"api",
-								"public",
-								"com"
-							],
-							"path": [
-								"userapigateway",
-								"trading",
-								"{{accountId}}",
-								"order",
-								"v2",
-								"{{orderId}}"
-							]
-						},
-						"description": "Fetches the status and details of a specific order for the given account. Works only for orders created within the last 30 days.\n\nReturns the v2 order shape: everything Get order returns (including `bracketId` for orders that belong to a bracket), plus `equityMarketSession`, `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`)."
+						"description": "Search order details and status for orders fulfilling defined criteria. Returns up to 500 orders, and only orders created within the last 30 days.\n\nEvery body field is an optional filter; the filters combine with AND. `status` (NEW, PARTIALLY_FILLED, CANCELLED, QUEUED_CANCELLED, FILLED, REJECTED, PENDING_REPLACE, PENDING_CANCEL, EXPIRED, REPLACED), `side` (BUY / SELL), `securityType` (EQUITY, OPTION, MULTI_LEG_INSTRUMENT, CRYPTO, ALT, TREASURY, BOND, INDEX, EVENTCONTRACT), `instruments` (array of `{ symbol, type }`), `openCloseIndicator` (OPEN / CLOSE), and a `createdAfter` / `createdBefore` window in ISO 8601 date-time format. Send `{}` to list every order from the last 30 days. The sample's date window is computed by the pre-request script as the trailing 30 days.\n\nEach entry in the returned `orders` array has the same shape Get order returns: order details (including `bracketId` for bracket legs) plus `equityMarketSession`, `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`)."
 					},
 					"response": []
 				},
@@ -1371,7 +1336,7 @@
 								}
 							]
 						},
-						"description": "Fetch bar data for a given symbol and period. type: EQUITY | CRYPTO | OPTION | INDEX. period: DAY | WEEK | MONTH | QUARTER | HALF_YEAR | YEAR | FIVE_YEARS | YTD | SINCE_PURCHASE. The response may include a `leadingFill` object describing a flat lead-in from the period start to the first real bar; present only when the first available data point starts after the requested period, and not emitted for the DAY chart or the ALL / SINCE_PURCHASE periods."
+						"description": "Fetch bar data for a given symbol and period. type: EQUITY | CRYPTO | OPTION | INDEX | EVENTCONTRACT. period: DAY | WEEK | MONTH | QUARTER | HALF_YEAR | YEAR | FIVE_YEARS | YTD | SINCE_PURCHASE. The response may include a `leadingFill` object describing a flat lead-in from the period start to the first real bar; present only when the first available data point starts after the requested period, and not emitted for the DAY chart or the ALL / SINCE_PURCHASE periods."
 					},
 					"response": []
 				},
@@ -1423,6 +1388,50 @@
 							]
 						},
 						"description": "Fetch bar data for a given symbol and period with aggregation override. aggregation: ONE_MINUTE | FIVE_MINUTES | TEN_MINUTES | FIFTEEN_MINUTES | THIRTY_MINUTES | ONE_HOUR | ONE_DAY | ONE_WEEK | ONE_MONTH | THREE_MONTHS | SIX_MONTHS | ONE_YEAR. The response may include a `leadingFill` object describing a flat lead-in from the period start to the first real bar; present only when the first available data point starts after the requested period, and not emitted for the DAY chart or the ALL / SINCE_PURCHASE periods."
+					},
+					"response": []
+				},
+				{
+					"name": "Get event contract bars",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/historicdata/event-contracts/{{eventId}}/bars/{{eventContractPeriod}}?symbols={{eventContractSymbols}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"historicdata",
+								"event-contracts",
+								"{{eventId}}",
+								"bars",
+								"{{eventContractPeriod}}"
+							],
+							"query": [
+								{
+									"key": "symbols",
+									"value": "{{eventContractSymbols}}",
+									"description": "Required. Comma-separated list of up to 8 -EVENTCONTRACT symbols, e.g. KALSHI.KXBALANCESHEET-EO26-6.6.Y-EVENTCONTRACT"
+								}
+							]
+						},
+						"description": "Fetch chart bars for one or more event contracts (prediction markets) belonging to the same event.\n\n`eventId` is the -EVENT grouping id the contracts belong to (e.g. `KALSHI.KXBALANCESHEET-EO26-EVENT`), used to fetch their current prices and, once the event has stopped trading, its close time. period: DAY | WEEK | MONTH | ALL — measured back from now, or from the event's close time once it has stopped trading, so bars never run past the last trade. `symbols` is a comma-separated list of up to 8 -EVENTCONTRACT symbols.\n\nThe response has the `period` and a `charts` array with one entry per symbol (`symbol`, `previousClosePrice`, `currentPrice`, `totalGainLoss`, `totalGainLossPercentage`, `bars`). Prices/OHLC are in dollars (0.00 to 1.00) for the side the symbol names, so a `.N` symbol carries the NO prices. The price is the implied probability — multiply by 100 for cents/percent. Bars start at the first period with a price, so charts in one response can start at different timestamps and are aligned by timestamp, not by index. A symbol is omitted from `charts` when it is unknown, has no candles, or has no price in the requested period.\n\nErrors: 400 for invalid symbols, too many symbols, a non event contract symbol, an eventId that is not an -EVENT id, or an invalid period; 404 when there is no data for any requested event contract; 502 for an upstream error."
 					},
 					"response": []
 				}
@@ -1583,6 +1592,21 @@
 		{
 			"key": "price",
 			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "eventId",
+			"value": "KALSHI.KXBALANCESHEET-EO26-EVENT",
+			"type": "default"
+		},
+		{
+			"key": "eventContractPeriod",
+			"value": "DAY",
+			"type": "default"
+		},
+		{
+			"key": "eventContractSymbols",
+			"value": "KALSHI.KXBALANCESHEET-EO26-6.6.Y-EVENTCONTRACT",
 			"type": "default"
 		}
 	]
