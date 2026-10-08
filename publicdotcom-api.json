@@ -1525,6 +1525,131 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Event Contracts",
+			"item": [
+				{
+					"name": "Get event categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/eventcontract/summary/categories",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"eventcontract",
+								"summary",
+								"categories"
+							]
+						},
+						"description": "Returns the event categories that can be used to browse event contracts (prediction markets), with each category's subcategories and the frequency filters it supports. Use a returned `category` value as the `category` input to \"Get event summary\".\n\nThe response is `{ categories: [...] }`; each entry has `category`, `subcategories` (array of strings) and `eventFrequency` (`show`, `frequencies` — ALL, ONCE, FIFTEEN_MINUTES, ONE_HOUR, ONE_DAY, ONE_WEEK, ONE_MONTH, ONE_YEAR)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get event summary",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sortingMode\": \"VOLUME\",\n  \"displayResolvedEvents\": false\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.public.com/userapigateway/eventcontract/summary",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"eventcontract",
+								"summary"
+							]
+						},
+						"description": "Returns a paginated list of event summaries, optionally limited to a category and filtered by eventSymbol or frequency. Each result includes the event's symbol, title, volume and status. Use the returned `eventSymbol` with \"Get event details\" to fetch outcomes, contracts and pricing. Results can include resolved and halted events. Up to 100 events are returned per page; to fetch the next page, send the same request with the `nextToken` from the previous response.\n\nBody: `sortingMode` is required — `VOLUME`, `EXPIRATION` or `RECENTLY_ADDED`. Optional: `category` and `subcategory` (from \"Get event categories\"), `nextToken`, `displayResolvedEvents` (boolean), `createdWithinDays` (integer), and `filters`. When `filters` is sent, both `eventSymbols` and `frequencies` are required inside it; `resolutionTimeStart` / `resolutionTimeEnd` (ISO 8601 date-time) are optional. Frequencies: ALL, ONCE, FIFTEEN_MINUTES, ONE_HOUR, ONE_DAY, ONE_WEEK, ONE_MONTH, ONE_YEAR. Example:\n\n```json\n{\n  \"sortingMode\": \"VOLUME\",\n  \"filters\": {\n    \"eventSymbols\": [\"KALSHI.KXBALANCESHEET-EO26\"],\n    \"frequencies\": [\"ALL\"]\n  }\n}\n```\n\nThe response is `{ content: [...], nextToken }`; each entry has `eventSymbol`, `title`, `volume`, `resolutionTime`, `resolved`, `halted`, `category`, `subcategories` and `symbols` (no outcomes — use \"Get event details\" for those).\n\nErrors: 400 for an invalid request body, for example a missing required field."
+					},
+					"response": []
+				},
+				{
+					"name": "Get event details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.public.com/userapigateway/eventcontract/details/{{eventSymbol}}?includeAllOutcomes=true",
+							"protocol": "https",
+							"host": [
+								"api",
+								"public",
+								"com"
+							],
+							"path": [
+								"userapigateway",
+								"eventcontract",
+								"details",
+								"{{eventSymbol}}"
+							],
+							"query": [
+								{
+									"key": "includeAllOutcomes",
+									"value": "true",
+									"description": "Optional, default true. When true, all outcomes are returned. When false, only a short list of up to 8 outcomes is returned."
+								}
+							]
+						},
+						"description": "Returns full details for a single event: its outcomes, the YES/NO contracts for each outcome with current pricing, the trading timeline, and the CFTC contract terms. The `eventSymbol` comes from \"Get event summary\" (e.g. `KALSHI.KXBALANCESHEET-EO26` — note this is not the `-EVENT` id used by \"Get event contract bars\").\n\nThe response has `eventSymbol`, `exchange` (KALSHI, PMUS, CDNA, …), `resolved`, `halted`, `title`, `category`, `subcategories`, `volume`, `cftcContract` (`contractTermsUrl`, `prohibitions`, `resolutionSources`), `outcomeCount` (unfiltered) and `outcomes`. Each outcome has `outcomeId`, `title`, `rules`, `volume`, `state` (STATE_NEW, STATE_OPEN, STATE_HALTED, STATE_CLOSED, STATE_SETTLED, …), `timeline` (`openTime`, `closeTime`, `expectedExpirationTime`, `latestExpirationTime`, `settlementTime`, `settlementDelaySeconds`), `settledOutcome`, `trading` (BUY_AND_SELL, LIQUIDATION_ONLY, DISABLED) and `contracts` — the YES and NO contracts, each with `symbol`, `predictedOutcome`, `bid`, `ask`, `last`, `openInterest`, `dailyGainValue`, `dailyGainPercentage` and `probability` (the YES contract's last price; for NO, 1 minus it).\n\nErrors: 400 with code 7004 when no event matches the eventSymbol."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -1607,6 +1732,11 @@
 		{
 			"key": "eventContractSymbols",
 			"value": "KALSHI.KXBALANCESHEET-EO26-6.6.Y-EVENTCONTRACT",
+			"type": "default"
+		},
+		{
+			"key": "eventSymbol",
+			"value": "KALSHI.KXBALANCESHEET-EO26",
 			"type": "default"
 		}
 	]
