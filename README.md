@@ -110,6 +110,13 @@ The collection is organized into the following folders:
 - `Get option greeks` - Retrieve Greeks (delta, gamma, theta, vega, rho) for an option
 - `Get strategy quote` - Get a quote for an option strategy (multi-leg) from a base symbol and option legs
 
+#### 10. **Event Contracts**
+- `Get event categories` - List event categories with their subcategories and supported frequency filters
+- `Get event summary` - Browse a paginated list of events (prediction markets), sorted by `VOLUME`, `EXPIRATION` or `RECENTLY_ADDED`
+- `Get event details` - Fetch one event's outcomes, YES/NO contracts with pricing, trading timeline and CFTC contract terms
+
+> **Note**: `Get event summary` requires `sortingMode`; `category` / `subcategory` come from `Get event categories`. When you send a `filters` object, both `eventSymbols` and `frequencies` are required inside it. Up to 100 events are returned per page — resend the same body with the response's `nextToken` to page. Pass a returned `eventSymbol` (e.g. `KALSHI.KXBALANCESHEET-EO26`) to `Get event details`; it returns 400 with code `7004` when no event matches, and `includeAllOutcomes=false` trims the outcomes to a short list of up to 8. The `eventSymbol` is not the `-EVENT` id that `Get event contract bars` takes.
+
 ## Collection Variables
 
 The collection includes variables that can be set at the collection level:
@@ -126,6 +133,7 @@ The collection includes variables that can be set at the collection level:
 - `eventId` - Event (`-EVENT`) grouping id for "Get event contract bars" (e.g., "KALSHI.KXBALANCESHEET-EO26-EVENT")
 - `eventContractPeriod` - Period for "Get event contract bars": "DAY", "WEEK", "MONTH" or "ALL"
 - `eventContractSymbols` - Comma-separated list of up to 8 `-EVENTCONTRACT` symbols for "Get event contract bars"
+- `eventSymbol` - Event symbol for "Get event details", as returned by "Get event summary" (e.g., "KALSHI.KXBALANCESHEET-EO26")
 
 ### Setting Collection Variables
 
