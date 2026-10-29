@@ -151,7 +151,8 @@
 								"portfolio",
 								"v2"
 							]
-						}
+						},
+						"description": "Retrieves a snapshot of the account's portfolio, including positions, equity breakdown, buying power, and open orders.\n\n`buyingPower` contains `cashOnlyBuyingPower`, `buyingPower`, `optionsBuyingPower` and `dayTradeBuyingPower` (buying power available for day trading; equal to `buyingPower` when the account is not enabled for day trade buying power)."
 					},
 					"response": []
 				},
@@ -985,7 +986,7 @@
 								"order"
 							]
 						},
-						"description": "Submits a new order asynchronously for the specified account.\n\nBracket orders: set `orderClass` to BRACKET, OCO or OTO and supply `takeProfit` and/or `stopLoss` — see the \"Place bracket order\" request. The returned orderId identifies the entry order; the exit legs are placed automatically when the entry fills.\n\nOrder placement is asynchronous. The response confirms submission, not execution or visibility. Use Get order to retrieve status or execution details."
+						"description": "Submits a new order asynchronously for the specified account.\n\n`orderType`: MARKET, LIMIT, STOP, STOP_LIMIT, MARKET_ON_CLOSE or LIMIT_ON_CLOSE.\n\nBracket orders: set `orderClass` to BRACKET, OCO or OTO and supply `takeProfit` and/or `stopLoss` — see the \"Place bracket order\" request. The returned orderId identifies the entry order; the exit legs are placed automatically when the entry fills.\n\nOrder placement is asynchronous. The response confirms submission, not execution or visibility. Use Get order to retrieve status or execution details."
 					},
 					"response": []
 				},
@@ -1042,7 +1043,7 @@
 								"order"
 							]
 						},
-						"description": "Submits an order with attached exit legs. `orderClass` is SIMPLE (or omitted) for a standalone order, or BRACKET / OCO / OTO for a bracket order built from `takeProfit` and/or `stopLoss`.\n\n`takeProfit` is always placed as a LIMIT order on the opposite side of the entry. `stopLoss` is placed as a STOP order when only `stopPrice` is present, or as a STOP_LIMIT order when `limitPrice` is also present.\n\nConstraints: equities and options only; a whole-share `quantity` (no `amount`); the CORE market session; and a LIMIT or MARKET entry order type (LIMIT only for OCO).\n\nThe returned orderId identifies the entry order. Every order in the bracket — entry and exits — reports that id as its `bracketId` in Get order responses; standalone orders have no `bracketId`."
+						"description": "Submits an order with attached exit legs. `orderClass` is SIMPLE (or omitted) for a standalone order, or BRACKET / OCO / OTO for a bracket order built from `takeProfit` and/or `stopLoss`.\n\n`takeProfit` is always placed as a LIMIT order on the opposite side of the entry. `stopLoss` is placed as a STOP order when only `stopPrice` is present, or as a STOP_LIMIT order when `limitPrice` is also present. `stopLoss.stopPrice` is required unless the stop-loss is trailing.\n\nConstraints: equities and options only; a whole-share `quantity` (no `amount`); the CORE market session; and a LIMIT or MARKET entry order type (LIMIT only for OCO).\n\nThe returned orderId identifies the entry order. Every order in the bracket — entry and exits — reports that id as its `bracketId` in Get order responses; standalone orders have no `bracketId`."
 					},
 					"response": []
 				},
@@ -1135,7 +1136,7 @@
 								"{{orderId}}"
 							]
 						},
-						"description": "Fetches the status and details of a specific order for the given account. Works only for orders created within the last 30 days.\n\nThe response includes `equityMarketSession` (REGULAR / REST_OF_DAY / TWENTY_FOUR_HOURS, for equity orders), `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`).\n\nOrders that belong to a bracket carry a `bracketId` — the orderId of the bracket's entry (parent) order, shared by every leg of that bracket. Standalone (non-bracket) orders have no `bracketId`."
+						"description": "Fetches the status and details of a specific order for the given account. Works only for orders created within the last 30 days.\n\nThe response includes `equityMarketSession` (REGULAR / REST_OF_DAY / TWENTY_FOUR_HOURS, for equity orders), `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`, and optionally `marketIdentificationCode`).\n\nOrders that belong to a bracket carry a `bracketId` — the orderId of the bracket's entry (parent) order, shared by every leg of that bracket. Standalone (non-bracket) orders have no `bracketId`.\n\nErrors: 400 for an invalid account ID; 404 when the order is not found."
 					},
 					"response": []
 				},
@@ -1197,7 +1198,7 @@
 								"search"
 							]
 						},
-						"description": "Search order details and status for orders fulfilling defined criteria. Returns up to 500 orders, and only orders created within the last 30 days.\n\nEvery body field is an optional filter; the filters combine with AND. `status` (NEW, PARTIALLY_FILLED, CANCELLED, QUEUED_CANCELLED, FILLED, REJECTED, PENDING_REPLACE, PENDING_CANCEL, EXPIRED, REPLACED), `side` (BUY / SELL), `securityType` (EQUITY, OPTION, MULTI_LEG_INSTRUMENT, CRYPTO, ALT, TREASURY, BOND, INDEX, EVENTCONTRACT), `instruments` (array of `{ symbol, type }`), `openCloseIndicator` (OPEN / CLOSE), and a `createdAfter` / `createdBefore` window in ISO 8601 date-time format. Send `{}` to list every order from the last 30 days. The sample's date window is computed by the pre-request script as the trailing 30 days.\n\nEach entry in the returned `orders` array has the same shape Get order returns: order details (including `bracketId` for bracket legs) plus `equityMarketSession`, `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`)."
+						"description": "Search order details and status for orders fulfilling defined criteria. Returns up to 500 orders, and only orders created within the last 30 days.\n\nEvery body field is an optional filter; the filters combine with AND. `status` (NEW, PARTIALLY_FILLED, CANCELLED, QUEUED_CANCELLED, FILLED, REJECTED, PENDING_REPLACE, PENDING_CANCEL, EXPIRED, REPLACED), `side` (BUY / SELL), `securityType` (EQUITY, OPTION, MULTI_LEG_INSTRUMENT, CRYPTO, ALT, TREASURY, BOND, INDEX, EVENTCONTRACT), `instruments` (array of `{ symbol, type }`), `openCloseIndicator` (OPEN / CLOSE), and a `createdAfter` / `createdBefore` window in ISO 8601 date-time format. Send `{}` to list every order from the last 30 days. The sample's date window is computed by the pre-request script as the trailing 30 days.\n\nEach entry in the returned `orders` array has the same shape Get order returns: order details (including `bracketId` for bracket legs) plus `equityMarketSession`, `filledAt`, `replacedAt`, `lastModified` and a `trades` array listing each execution (`tradeId`, `instrument`, `side`, `quantity`, `price`, `timestamp`, and optionally `marketIdentificationCode`).\n\nErrors: 400 for an invalid account ID; 404 when the account is not found, does not belong to the client, or is of an unsupported type."
 					},
 					"response": []
 				},
@@ -1281,7 +1282,7 @@
 								"order"
 							]
 						},
-						"description": "Submits an asynchronous cancel-and-replace of an existing order. Provide either quantity or amount (notional value) in the body - the two are mutually exclusive. Supported for equity, option, and crypto quantity orders. The response confirms submission only; use Get order to verify the replacement's status.\n\nBracket orders: the opening (entry) order cannot be replaced. The closing legs — take-profit, stop-loss, and both legs of an OCO — accept `limitPrice` and `stopPrice` replacements only; `quantity`, `orderType` and `expiration` must be resubmitted unchanged."
+						"description": "Submits an asynchronous cancel-and-replace of an existing order. Provide either quantity or amount (notional value) in the body - the two are mutually exclusive. Supported for equity, option, and crypto quantity orders. The response confirms submission only; use Get order to verify the replacement's status.\n\nBracket orders: the opening (entry) order cannot be replaced. The closing legs — take-profit, stop-loss, and both legs of an OCO — accept `limitPrice` and `stopPrice` replacements only; `quantity`, `orderType` and `expiration` must be resubmitted unchanged.\n\n`orderType`: MARKET, LIMIT, STOP, STOP_LIMIT, MARKET_ON_CLOSE or LIMIT_ON_CLOSE."
 					},
 					"response": []
 				}
@@ -1645,7 +1646,7 @@
 								}
 							]
 						},
-						"description": "Returns full details for a single event: its outcomes, the YES/NO contracts for each outcome with current pricing, the trading timeline, and the CFTC contract terms. The `eventSymbol` comes from \"Get event summary\" (e.g. `KALSHI.KXBALANCESHEET-EO26` — note this is not the `-EVENT` id used by \"Get event contract bars\").\n\nThe response has `eventSymbol`, `exchange` (KALSHI, PMUS, CDNA, …), `resolved`, `halted`, `title`, `category`, `subcategories`, `volume`, `cftcContract` (`contractTermsUrl`, `prohibitions`, `resolutionSources`), `outcomeCount` (unfiltered) and `outcomes`. Each outcome has `outcomeId`, `title`, `rules`, `volume`, `state` (STATE_NEW, STATE_OPEN, STATE_HALTED, STATE_CLOSED, STATE_SETTLED, …), `timeline` (`openTime`, `closeTime`, `expectedExpirationTime`, `latestExpirationTime`, `settlementTime`, `settlementDelaySeconds`), `settledOutcome`, `trading` (BUY_AND_SELL, LIQUIDATION_ONLY, DISABLED) and `contracts` — the YES and NO contracts, each with `symbol`, `predictedOutcome`, `bid`, `ask`, `last`, `openInterest`, `dailyGainValue`, `dailyGainPercentage` and `probability` (the YES contract's last price; for NO, 1 minus it).\n\nErrors: 400 with code 7004 when no event matches the eventSymbol."
+						"description": "Returns full details for a single event: its outcomes, the YES/NO contracts for each outcome with current pricing, the trading timeline, and the CFTC contract terms. The `eventSymbol` comes from \"Get event summary\" (e.g. `KALSHI.KXBALANCESHEET-EO26` — note this is not the `-EVENT` id used by \"Get event contract bars\").\n\nThe response has `eventSymbol`, `exchange` (KALSHI, PMUS, CDNA, …), `resolved`, `halted`, `title`, `category`, `subcategories`, `volume`, `cftcContract` (`contractTermsUrl`, `prohibitions`, `resolutionSources`), `outcomeCount` (unfiltered) and `outcomes`. Each outcome has `outcomeId`, `title`, `rules`, `volume`, `state` (STATE_NEW, STATE_OPEN, STATE_HALTED, STATE_CLOSED, STATE_SETTLED, …), `timeline` (`openTime`, `closeTime`, `expectedExpirationTime`, `latestExpirationTime`, `settlementTime`, `settlementDelaySeconds`), `settledOutcome`, `trading` (BUY_AND_SELL, LIQUIDATION_ONLY, DISABLED), an optional `floorStrike` and `contracts` — the YES and NO contracts, each with `symbol`, `predictedOutcome`, `bid`, `ask`, `last`, `openInterest`, `dailyGainValue`, `dailyGainPercentage` and `probability` (the YES contract's last price; for NO, 1 minus it).\n\nErrors: 400 with code 7004 when no event matches the eventSymbol."
 					},
 					"response": []
 				}
